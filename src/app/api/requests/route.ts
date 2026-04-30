@@ -9,11 +9,19 @@ const redis = new Redis({
 
 export async function GET() {
   try {
+    console.log("URL:", process.env.UPSTASH_REDIS_REST_URL)
+    console.log("TOKEN:", process.env.UPSTASH_REDIS_REST_TOKEN)
+
     const keys = await redis.keys('*')
     const values = await Promise.all(keys.map((key) => redis.get(key)))
-    return NextResponse.json(values)
-  } catch (error) {
-    return NextResponse.json({ error: 'GET failed' }, { status: 500 })
+
+    return NextResponse.json(values || [])
+  } catch (error: any) {
+    console.error("REAL ERROR:", error)
+    return NextResponse.json(
+      { error: error?.message || 'GET failed' },
+      { status: 500 }
+    )
   }
 }
 
