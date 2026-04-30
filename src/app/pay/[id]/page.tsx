@@ -61,7 +61,7 @@ export default function PaymentPage() {
     try {
       const client = createWalletClient({
         chain: arcTestnet,
-        transport: custom(window.ethereum),
+        transport: custom(window.ethereum!),
       });
 
       const [address] = await client.requestAddresses();
@@ -84,7 +84,7 @@ export default function PaymentPage() {
       const walletClient = createWalletClient({
         account,
         chain: arcTestnet,
-        transport: custom(window.ethereum),
+        transport: custom(window.ethereum!),
       });
 
       const amountRaw = parseUnits(String(request.amount || "0"), 6);
