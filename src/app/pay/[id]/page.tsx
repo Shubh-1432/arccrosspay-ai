@@ -30,15 +30,24 @@ export default function PaymentPage() {
   const [txHash, setTxHash] = useState("");
   const [account, setAccount] = useState<`0x${string}` | null>(null);
 
-  // ✅ LOAD DATA FIRST
   useEffect(() => {
-    fetch(`/api/requests/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setRequest(data);
-        if (data.status === "paid") setStatus("paid");
-      });
-  }, [id]);
+  fetch(`/api/requests`)
+    .then((res) => res.json())
+    .then((data) => {
+      const found = data.find((r: any) => r.id === id);
+
+      if (!found) {
+        setError("Request not found");
+        return;
+      }
+
+      setRequest(found);
+
+      if (found.status === "paid") {
+        setStatus("paid");
+      }
+    });
+}, [id]);
 
   // ✅ LOADING UI (ONLY ONE)
   if (!request) {
@@ -55,7 +64,6 @@ export default function PaymentPage() {
       setError("Please install MetaMask.");
       return;
     }
-
     setStatus("connecting");
 
     try {
